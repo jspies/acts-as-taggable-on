@@ -20,4 +20,11 @@ class Tag < ActiveRecord::Base
   def count
     read_attribute(:count).to_i
   end
+  
+  # used to get counts for all tags across all owners. useful for tag clouds
+  # grouping tags across many kinds of objects
+  # should probably be expanded to take a context
+  def self.counts
+    find_by_sql("SELECT tags.name, tags.id, count(*) AS count FROM taggings LEFT JOIN tags ON tags.id=taggings.tag_id GROUP BY taggings.tag_id")
+  end
 end
